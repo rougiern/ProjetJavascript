@@ -5,31 +5,11 @@ var recherche_courante;
 // Tableau d'objets de type resultats (avec titre, date et url)
 var recherche_courante_news = [];
 
-//ajouter une recherche à la div recherches-stockees
-function afficheRecherche(saisie){
-  //p
-  var p = document.createElement("p");
-  p.className="titre-recherche";
-  //label
-  var label = document.createElement("label");
-  label.appendChild(document.createTextNode(saisie));
-  label.setAttribute("onclick","selectionner_recherche(this)");
-  //img
-  var img= document.createElement("img");
-  img.src="images/croix30.jpg";
-  img.className="icone-croix";
-  img.setAttribute("onclick","supprimer_recherche(this)");
-  //ajout
-  p.appendChild(label);
-  p.appendChild(img);
-  document.getElementById("recherches-stockees").insertAdjacentElement("beforeend",p);
-}
-
 function ajouter_recherche() {
 	var zone_saisie = document.getElementById('zone_saisie').value;
   if(recherches.indexOf(zone_saisie)==-1){
     recherches.push(zone_saisie);
-    afficheRecherche(zone_saisie);
+    $("#recherches-stockees").append('<p class="titre-recherche"><label onclick="selectionner_recherche(this)">'+$("#zone_saisie").val()+'</label><img src="images/croix30.jpg" onclick="supprimer_recherche(this)" class="icone-croix"/></p>');
     setCookie("recherches",JSON.stringify(recherches),1000);
   }else{
     alert('recherche déjà enregistrée');
@@ -57,19 +37,28 @@ function selectionner_recherche(e) {
 
 function init() {
 	recherches = JSON.parse(getCookie("recherches"));
-  for(var rech in recherches){
-    afficheRecherche(rech);
+  for(var rech of recherches){
+    $("#recherches-stockees").append('<p class="titre-recherche"><label onclick="selectionner_recherche(this)">'+rech+'</label><img src="images/croix30.jpg" onclick="supprimer_recherche(this)" class="icone-croix"/></p>');
   }
 }
 
-
 function rechercher_nouvelles() {
-	//TODO ...
+	document.getElementById("resultats").innerHTML="";
+  document.getElementById("wait").style.display="block";
+  try{
+    $.get("calcul-serveur.php?data="+$("#zone_saisie").val(),function(data){
+      maj_resultats(data);
+    });
+  }catch(err){
+    alert(err.message);
+  }
 }
 
-
-function maj_resultats(res) {
-	//TODO ...
+function maj_resultats(resultat) {
+	document.getElementById("wait").style.display="none";
+  for(var res in resultats){
+    $("#resultats").append('<p class="titre_result"><a class="titre_news" href="url" target="_blank"> titre </a><span class="date_news">date</span><span class="action_news" onclick="sauver_nouvelle(this)"><img src="images/horloge15.jpg"/></span></p>');
+  }
 }
 
 
