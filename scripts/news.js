@@ -1,3 +1,6 @@
+//arret à maj_resultats()
+
+
 // Tableau contenant des chaines de caractères correspondant aux recherches stockées
 var recherches = [];
 // Chaine de caractères correspondant à la recherche courante
