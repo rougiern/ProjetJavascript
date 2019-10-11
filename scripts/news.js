@@ -1,6 +1,5 @@
 //arret à maj_resultats()
 
-
 // Tableau contenant des chaines de caractères correspondant aux recherches stockées
 var recherches = [];
 // Chaine de caractères correspondant à la recherche courante
@@ -13,7 +12,8 @@ function ajouter_recherche() {
   if(recherches.indexOf(zone_saisie)==-1){
     recherches.push(zone_saisie);
     $("#recherches-stockees").append('<p class="titre-recherche"><label onclick="selectionner_recherche(this)">'+$("#zone_saisie").val()+'</label><img src="images/croix30.jpg" onclick="supprimer_recherche(this)" class="icone-croix"/></p>');
-    setCookie("recherches",JSON.stringify(recherches),1000);
+    // setCookie("recherches",JSON.stringify(recherches),1000);
+		$.cookie('recherches', JSON.stringify(recherches), { expires: 1000 });
   }else{
     alert('recherche déjà enregistrée');
   }
@@ -28,17 +28,18 @@ function supprimer_recherche(e) {
 
   recherches.splice(index,1);
 	document.getElementById("recherches-stockees").removeChild(e.parentNode);
-  setCookie("recherches",JSON.stringify(recherches),1000);
+  // setCookie("recherches",JSON.stringify(recherches),1000);
+	$.cookie('recherches', JSON.stringify(recherches), { expires: 1000 });
 }
 
 
 function selectionner_recherche(e) {
   recherche_courante =e.innerHTML;
 	document.getElementById('zone_saisie').value = recherche_courante;
-	if(getCookie(recherche_courante) != ""){
-		recherche_courante_news = JSON.parse(getCookie(recherche_courante));
-	}else{
-		recherche_courante_news = [];
+	recherche_courante_news = [];
+	if($.cookie(recherche_courante) != null){
+		console.log()
+		recherche_courante_news = JSON.parse($.cookie(recherche_courante));
 	}
 	document.getElementById("resultats").innerHTML="";
 	$.each(recherche_courante_news, function(){
@@ -48,13 +49,13 @@ function selectionner_recherche(e) {
 
 
 function init() {
-	if(getCookie("recherches") != ""){
-		recherches = JSON.parse(getCookie("recherches"));
+	if($.cookie("recherches") != null){
+		recherches = JSON.parse($.cookie("recherches"));
+		console.log(recherches);
+	  for(var rech of recherches){
+	    $("#recherches-stockees").append('<p class="titre-recherche"><label onclick="selectionner_recherche(this)">'+rech+'</label><img src="images/croix30.jpg" onclick="supprimer_recherche(this)" class="icone-croix"/></p>');
+	  }
 	}
-	console.log(recherches);
-  for(var rech of recherches){
-    $("#recherches-stockees").append('<p class="titre-recherche"><label onclick="selectionner_recherche(this)">'+rech+'</label><img src="images/croix30.jpg" onclick="supprimer_recherche(this)" class="icone-croix"/></p>');
-  }
 }
 
 function rechercher_nouvelles() {
@@ -71,10 +72,9 @@ function rechercher_nouvelles() {
 
 function maj_resultats(resultat) {
 	recherche_courante = document.getElementById('zone_saisie').value;
-	if(getCookie(recherche_courante) != ""){
-		recherche_courante_news = JSON.parse(getCookie(recherche_courante));
-	}else{
-		recherche_courante_news = [];
+	recherche_courante_news = [];
+	if($.cookie(recherche_courante) != null){
+		recherche_courante_news = JSON.parse($.cookie(recherche_courante));
 	}
 	document.getElementById("wait").style.display="none";
 	$.each(JSON.parse(resultat), function(){
@@ -94,13 +94,14 @@ function maj_resultats(resultat) {
 function sauver_nouvelle(e) {
 	e.firstChild.src= "images/disk15.jpg";
 	e.setAttribute("onclick","supprimer_nouvelle(this)");
-	var nouvellesauvee = {titre : e.parentNode.firstChild.innerHTML.trim(),
-												url : e.parentNode.firstChild.href,
-												date : e.parentNode.childNodes[1].innerHTML.trim()};
+	var nouvellesauvee = {titre : decodeHtmlEntities(e.parentNode.firstChild.innerHTML.trim()),
+												url : decodeHtmlEntities(e.parentNode.firstChild.href),
+												date : decodeHtmlEntities(e.parentNode.childNodes[1].innerHTML.trim())};
 	if(indexOfResultat(recherche_courante_news, nouvellesauvee) == -1){
 		recherche_courante_news.push(nouvellesauvee);
 	}
-	setCookie(recherche_courante,JSON.stringify(recherche_courante_news),1000);
+	// setCookie(recherche_courante,JSON.stringify(recherche_courante_news),1000);
+	$.cookie(recherche_courante,JSON.stringify(recherche_courante_news), { expires: 1000 });
 }
 
 function supprimer_nouvelle(e) {
@@ -121,7 +122,8 @@ function supprimer_nouvelle(e) {
 			$("#resultats").append('<p class="titre_result"><a class="titre_news" href="' + this.url + '" target="_blank"> '+ this.titre +' </a><span class="date_news">'+this.date+'</span><span class="action_news" onclick="supprimer_nouvelle(this)"><img src="images/disk15.jpg"/></span></p>');
 		});
 	}
-	setCookie(recherche_courante,JSON.stringify(recherche_courante_news),1000);
+	// setCookie(recherche_courante,JSON.stringify(recherche_courante_news),1000);
+	$.cookie(recherche_courante,JSON.stringify(recherche_courante_news), { expires: 1000 });
 }
 
 function setCookie(cname, cvalue, exdays) {
