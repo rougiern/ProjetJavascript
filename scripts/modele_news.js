@@ -20,6 +20,10 @@ function supprimer_recherche_modele(txt) {
   recherches.splice(index,1);
 }
 
+function get_index_recherche_stockee(r){
+  return recherches.indexOf(r);
+}
+
 function delete_item_recherche_courante_news(index){
   recherche_courante_news.splice(index, 1);
 }

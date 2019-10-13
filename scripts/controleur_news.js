@@ -81,14 +81,16 @@ function maj_resultats(resultat) {
 
 
 function sauver_nouvelle(e) {
-	var nouvellesauvee = {titre : decodeHtmlEntities(e.parentNode.firstChild.innerHTML.trim()),
-												url : decodeHtmlEntities(e.parentNode.firstChild.href),
-												date : decodeHtmlEntities(e.parentNode.childNodes[1].innerHTML.trim())};
-	if(get_index_news(nouvellesauvee) == -1){
-		add_recherche_courante_news(nouvellesauvee);
-	}
-  sauver_nouvelle_vue(e);
-	$.cookie(recherche_courante,JSON.stringify(recherche_courante_news), { expires: 1000 });
+  if(get_index_recherche_stockee(recherche_courante)!=-1){
+  	var nouvellesauvee = {titre : decodeHtmlEntities(e.parentNode.firstChild.innerHTML.trim()),
+  												url : decodeHtmlEntities(e.parentNode.firstChild.href),
+  												date : decodeHtmlEntities(e.parentNode.childNodes[1].innerHTML.trim())};
+  	if(get_index_news(nouvellesauvee) == -1){
+  		add_recherche_courante_news(nouvellesauvee);
+  	}
+    sauver_nouvelle_vue(e);
+  	$.cookie(recherche_courante,JSON.stringify(recherche_courante_news), { expires: 1000 });
+  }
 }
 
 function supprimer_nouvelle(e) {
