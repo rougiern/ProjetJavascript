@@ -14,9 +14,16 @@ function ajouter_recherche() {
 
 
 function supprimer_recherche(e) {
-  supprimer_recherche_modele(e.parentNode.firstChild.innerHTML);
+  rech = e.parentNode.firstChild.innerHTML;
+  supprimer_recherche_modele(rech);
   supprimer_recherche_vue(e);
 	$.cookie('recherches', JSON.stringify(recherches), { expires: 1000 });
+  $.removeCookie(rech);
+  if(recherche_enregistree==false && recherche_courante==rech){
+    rechercher_nouvelles();
+  }else if(recherche_enregistree==true && recherche_courante==rech){
+    vider_resultats();
+  }
 }
 
 

@@ -7,6 +7,10 @@ function supprimer_recherche_vue(e) {
 	document.getElementById("recherches-stockees").removeChild(e.parentNode);
 }
 
+function vider_resultats(){
+  document.getElementById("resultats").innerHTML="";
+}
+
 
 function selectionner_recherche_vue() {
 	document.getElementById('zone_saisie').value = recherche_courante;
@@ -22,7 +26,7 @@ function init_vue(rech) {
 }
 
 function rechercher_nouvelles_vue() {
-	document.getElementById("resultats").innerHTML="";
+	vider_resultats();
   document.getElementById("wait").style.display="block";
 }
 
